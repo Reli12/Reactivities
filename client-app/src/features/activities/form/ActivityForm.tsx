@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ChangeEvent } from "react";
 import { useState } from "react";
 import { Button, Form, Segment } from "semantic-ui-react";
 import { Activity } from "../../../App/models/activity";
@@ -6,9 +6,10 @@ import { Activity } from "../../../App/models/activity";
 interface Props{
     activity:Activity| undefined;
     closeForm:()=>void;
+    createOrEdit:(activity:Activity)=>void;
 }
 
-export default function ActivityForm({activity:selectedActivity,closeForm}:Props){
+export default function ActivityForm({activity:selectedActivity,closeForm,createOrEdit}:Props){
     
     const initialState=selectedActivity?? {
         id:'',
@@ -23,17 +24,22 @@ export default function ActivityForm({activity:selectedActivity,closeForm}:Props
     const[activity,setActivity]=useState(initialState);
 
     function handleSumbit(){
-        console.log(activity);
+        createOrEdit(activity);
+    }
+
+    function handleImputChange(event:ChangeEvent<HTMLInputElement|HTMLTextAreaElement>){
+        const{name,value}=event.target;
+        setActivity({...activity,[name]:value});
     }
 
     return(
         <Segment clearing>
-            <Form>
-                <Form.Input placeholder='Title'/>
-                <Form.TextArea placeholder='Description'/>
-                <Form.Input placeholder='Category'/>
-                <Form.Input placeholder='City'/>
-                <Form.Input placeholder='Venue'/>
+            <Form onSubmit={handleSumbit} autoComplete='off'>
+                <Form.Input placeholder='Title' value={activity.title} name='title' onChange={handleImputChange}/>
+                <Form.TextArea placeholder='Description'value={activity.description} name='description' onChange={handleImputChange}/>
+                <Form.Input placeholder='Category'value={activity.category} name='category' onChange={handleImputChange}/>
+                <Form.Input placeholder='City'value={activity.city} name='city' onChange={handleImputChange}/>
+                <Form.Input placeholder='Venue'value={activity.venue} name='venue' onChange={handleImputChange}/>
                 <Button floated='right' positive type='submit' content='Submit'/>
                 <Button onClick={closeForm} floated='right'  type='button' content='Cencle'/>
             </Form>
