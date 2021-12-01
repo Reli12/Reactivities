@@ -19,6 +19,17 @@ export default class ActivityStore{
             Date.parse(a.date)-Date.parse(b.date));
     }
 
+    get groupedActivities(){
+        return Object.entries(
+            this.activitiesByDate.reduce((activitities,activity)=>{
+                const date=activity.date;//key for objects
+                activitities[date]=activitities[date] ? [...activitities[date], activity]
+                 :[activity];
+                 return activitities;
+            },{} as {[key:string]:Activity[]})
+        )
+    }
+
     //if use an arrow function it automaticly bound action to the class
 
      //this is for evry activity
